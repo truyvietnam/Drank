@@ -1,7 +1,8 @@
 #include <iostream>
 #include <Windows.h>
 #include <Psapi.h>
-#include "Utils.h"
+#include <safetyhook.hpp>
+#include "Utils.hpp"
 
 struct vec3 {
 	float x;
@@ -10,6 +11,13 @@ struct vec3 {
 };
 
 bool running = false;
+
+SafetyHookInline worldTick_hook;
+
+void worldTick(uintptr_t* _this) {
+	printf("worldTick\n");
+	worldTick_hook.thiscall<void, uintptr_t*>(_this);
+}
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
 	if (!running) {
@@ -31,6 +39,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 		std::cout << test << std::endl;
 
 		float* yVel = reinterpret_cast<float*>(test + 0xB4);
+
+		auto addr = BASE + 0x51CB80;
+
+		worldTick_hook = safetyhook::create_inline(reinterpret_cast<void*>(addr), &worldTick);
 
 		while (true) {
 
