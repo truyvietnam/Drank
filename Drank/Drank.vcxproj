@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="Library\safetyhook.hpp" />
     <ClInclude Include="Library\Zydis.h" />
+    <ClInclude Include="Math.hpp" />
     <ClInclude Include="Utils.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -59,6 +59,11 @@ std::byte* Utils::FindMultiLevelPtr(std::byte* baseAddr, std::vector<ptrdiff_t> 
 			break;
 		}
 		addr += *offset;
+
+        if (addr == NULL) {
+            break;
+        }
+
 		offset++;
 	} while (true);
 	return addr;
