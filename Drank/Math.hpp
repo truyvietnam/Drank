@@ -13,6 +13,13 @@ struct vec3 {
 	vec3 operator+(vec3 b) {
 		return { x + b.x, y + b.y, z + b.z };
 	}
+
+	bool isNotZero() {
+		return 
+			floor(x) != 0.0 &&
+			floor(y) != 0.0 &&
+			floor(z) != 0.0;
+	}
 };
 
 struct vec2 {
@@ -31,7 +38,7 @@ vec3 GetForwardVector(vec2 rot) {
 }
 
 vec2 CalcAngle(vec3 src, vec3 target) {
-	vec3 delta = target - src;
+	vec3 delta = src - target;
 	float dist = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
 
 	vec2 angles{};
