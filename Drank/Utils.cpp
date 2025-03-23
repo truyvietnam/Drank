@@ -67,4 +67,14 @@ std::byte* Utils::FindMultiLevelPtr(std::byte* baseAddr, std::vector<ptrdiff_t> 
 		offset++;
 	} while (true);
 	return addr;
+}
+
+bool Utils::isASCII(const std::string& str)
+{
+    for (char ch : str) {
+        if (static_cast<unsigned char>(ch) > 127) {
+            return false; // Non-ASCII character found
+        }
+    }
+    return true; // All characters are ASCII
 };
