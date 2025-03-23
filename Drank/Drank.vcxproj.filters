@@ -87,6 +87,9 @@
     <ClInclude Include="Stuffs\Module\Modules\ESP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Stuffs\Module\Modules\ModList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

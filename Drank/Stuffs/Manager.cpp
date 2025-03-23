@@ -14,11 +14,13 @@ void Manager::addModule(std::shared_ptr<Module> module)
 #include "Module/Modules/Aimbot.hpp"
 #include "Module/Modules/Fly.hpp"
 #include "Module/Modules/ESP.h"
+#include "Module/Modules/ModList.h"
 
 void Manager::initModules() {
 	addModule(std::make_shared<Aimbot>(this));
 	addModule(std::make_shared<Fly>(this));
 	addModule(std::make_shared<ESP>(this));
+	addModule(std::make_shared<ModList>(this));
 }
 
 #include "Hook/Hooks/RaycastHook.h"
@@ -72,6 +74,9 @@ void Manager::keyListener() { //this so suck lmao
 					module->enabled = !module->enabled;
 					if (module->enabled) {
 						module->onEnable();
+					}
+					else {
+						module->onDisable();
 					}
 				}
 			}

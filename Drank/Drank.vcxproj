@@ -178,6 +178,7 @@
     <ClInclude Include="Stuffs\Module\Modules\Aimbot.hpp" />
     <ClInclude Include="Stuffs\Module\Modules\ESP.h" />
     <ClInclude Include="Stuffs\Module\Modules\Fly.hpp" />
+    <ClInclude Include="Stuffs\Module\Modules\ModList.h" />
     <ClInclude Include="Utils.hpp" />
   </ItemGroup>
   <ItemGroup>

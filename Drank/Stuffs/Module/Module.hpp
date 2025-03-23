@@ -16,6 +16,7 @@ public:
 	Module(Manager*, std::string);
 
 	virtual void onEnable() {};
+	virtual void onDisable() {};
 	virtual void onWorldTick() {};
 	virtual void onBaseTick() {};
 	virtual void onImgui() {};
