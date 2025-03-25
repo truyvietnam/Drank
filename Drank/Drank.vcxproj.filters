@@ -54,9 +54,6 @@
     <ClInclude Include="Library\kiero\kiero.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Library\minhook\MinHook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Stuffs\Module\Module.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -134,8 +131,5 @@
     <ClCompile Include="Stuffs\Hook\Hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Library\minhook\libMinHook_x86.lib" />
   </ItemGroup>
 </Project>

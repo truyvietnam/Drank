@@ -164,7 +164,6 @@
     <ClInclude Include="Library\imgui\imstb_textedit.h" />
     <ClInclude Include="Library\imgui\imstb_truetype.h" />
     <ClInclude Include="Library\kiero\kiero.h" />
-    <ClInclude Include="Library\minhook\MinHook.h" />
     <ClInclude Include="Library\safetyhook.hpp" />
     <ClInclude Include="Library\Zydis.h" />
     <ClInclude Include="Math.hpp" />
@@ -196,9 +195,6 @@
     <ClCompile Include="Stuffs\Manager.cpp" />
     <ClCompile Include="Stuffs\Module\Module.cpp" />
     <ClCompile Include="Utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Library\minhook\libMinHook_x86.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

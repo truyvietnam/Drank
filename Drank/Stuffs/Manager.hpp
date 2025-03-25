@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <shared_mutex>
+#include <safetyhook.hpp>
 
 class Hook;
 class Module;
@@ -12,9 +13,14 @@ private:
 public:
 	std::vector<std::shared_ptr<Module>> modules;
 	std::vector<std::shared_ptr<Hook>> hooks;
+
+	std::vector<SafetyHookInline*> inlineHooks;
+	std::vector<SafetyHookMid*> midHooks;
+
 	bool init = false;
 
 	Manager();
+	~Manager();
 	void keyListener();
 
 	void initModules();

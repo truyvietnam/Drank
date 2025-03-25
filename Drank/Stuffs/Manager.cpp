@@ -36,15 +36,15 @@ void Manager::initHooks() {
 Manager::Manager() {
 	printf("Injected\n");
 
-	initHooks();
-	initModules();
-
 	auto worldPtr = *(int*)(Utils::FindSignature("A1 ?? ?? ?? ?? 85 C0 74 07 C6 80 59 01 00 00 01 5D C2 04 00") + 1);
 	auto localPlayerPtr = *(int*)(Utils::FindSignature("A1 ?? ?? ?? ?? 8B 40 ?? 85 C0 74 ?? 0F 28 ?? ?? EB 07 0F 28 05 ?? ?? ?? ?? 80") + 1);
 	auto test = Utils::FindMultiLevelPtr((std::byte*)localPlayerPtr, { 0xC, 0x28, 0x54, 0x88, 0xAC, 0x4 });
 
 	Offset::world = worldPtr;
 	Offset::base = localPlayerPtr;
+
+	initHooks();
+	initModules();
 
 	init = true;
 
@@ -63,6 +63,18 @@ Manager::Manager() {
 		}
 
 		Sleep(10);
+	}
+
+	delete this;
+}
+
+Manager::~Manager()
+{
+	for (auto a : inlineHooks) {
+		a->reset();
+	}
+	for (auto a : midHooks) {
+		//a->reset();
 	}
 }
 

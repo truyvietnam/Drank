@@ -1,13 +1,12 @@
+#include <Windows.h>
 #include <iostream>
 #include <safetyhook.hpp>
 #include <iomanip>
-#include <minhook/MinHook.h>
 
 #include "kiero/kiero.h"
 #include "Stuffs/Manager.hpp"
 #include "Offsets.h"
 
-#pragma comment(lib, "libMinHook_x86.lib")
 bool running = false;
 
 Manager* manager;
@@ -22,15 +21,12 @@ DWORD WINAPI initClient(LPVOID lpParameter) {
 		freopen_s(&fDummy, "CONOUT$", "w", stderr);
 		freopen_s(&fDummy, "CONOUT$", "w", stdout);
 
-		MH_Initialize();
-
 		manager = new Manager();
 	}
 
 	Sleep(25);
 
 	kiero::shutdown();
-	MH_Uninitialize();
 
 	Sleep(25);
 

@@ -13,13 +13,8 @@
 #include "../Hook.h"
 #include "../../Utils.hpp"
 
-typedef HRESULT(__stdcall* Present) (IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT Flags);
-typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
-typedef uintptr_t PTR;
-
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-Present oPresent;
 HWND window = NULL;
 WNDPROC oWndProc;
 ID3D11Device* pDevice = NULL;
@@ -44,6 +39,8 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 bool init = false;
 bool init2 = false;
 Manager* scMgr;
+SafetyHookInline presentHook;
+SafetyHookInline resizeHook;
 
 HRESULT __stdcall hkPresent(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags)
 {
@@ -63,18 +60,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT
 		oWndProc = (WNDPROC)SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
 		InitImGui();
 		init = true;
-		return oPresent(pSwapChain, SyncInterval, Flags);
+		return presentHook.unsafe_stdcall<HRESULT>(pSwapChain, SyncInterval, Flags);
 	}
-
-	static int localPlayerPtr = 0;
-	static int worldPtr = 0;
 
 	if (!init2)
 	{
-		localPlayerPtr = *(int*)(Utils::FindSignature("A1 ?? ?? ?? ?? 8B 40 ?? 85 C0 74 ?? 0F 28 ?? ?? EB 07 0F 28 05 ?? ?? ?? ?? 80") + 1);
-
-		worldPtr = *(int*)(Utils::FindSignature("A1 ?? ?? ?? ?? 85 C0 74 07 C6 80 59 01 00 00 01 5D C2 04 00") + 1);
-
 		pSwapChain->GetDevice(__uuidof(ID3D11Device), (void**)&pDevice);
 
 		ID3D11Texture2D* pBackBuffer;
@@ -93,7 +83,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT
 	auto ESPmod = scMgr->getModule<ESP>();
 	if (ESPmod) {
 		RECT windowRect;
-		GetWindowRect(window, &windowRect);
+		GetClientRect(window, &windowRect);
 		int width = windowRect.right - windowRect.left;
 		int height = windowRect.bottom - windowRect.top;
 
@@ -112,11 +102,8 @@ HRESULT __stdcall hkPresent(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT
 	pContext->OMSetRenderTargets(1, &mainRenderTargetView, NULL);
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	return oPresent(pSwapChain, SyncInterval, Flags);
+	return presentHook.unsafe_stdcall<HRESULT>(pSwapChain, SyncInterval, Flags);
 }
-
-typedef HRESULT(__stdcall* resize_buffers_t)(IDXGISwapChain3*, UINT, UINT, UINT, DXGI_FORMAT, UINT);
-resize_buffers_t original_resize_buffers;
 
 HRESULT __stdcall resize_buffers_callback(IDXGISwapChain3* swap_chain, UINT buffer_count, UINT width, UINT height, DXGI_FORMAT new_format, UINT swap_chain_flags) {
 	//reinit ImGui dx11
@@ -124,7 +111,7 @@ HRESULT __stdcall resize_buffers_callback(IDXGISwapChain3* swap_chain, UINT buff
 	pContext->Release();
 	mainRenderTargetView->Release();
 	init2 = false;
-	return original_resize_buffers(swap_chain, buffer_count, width, height, new_format, swap_chain_flags);
+	return resizeHook.unsafe_stdcall<HRESULT>(swap_chain, buffer_count, width, height, new_format, swap_chain_flags);
 }
 
 class PresentHook : public Hook {
@@ -134,8 +121,11 @@ public:
 
 		if (kiero::init(kiero::RenderType::D3D11) == kiero::Status::Success)
 		{
-			kiero::bind(8, (void**)&oPresent, hkPresent);
-			kiero::bind(13, (void**)&original_resize_buffers, resize_buffers_callback);
+			auto present = reinterpret_cast<void*>(kiero::getMethodsTable()[8]);
+			auto resize = reinterpret_cast<void*>(kiero::getMethodsTable()[13]);
+
+			CreateInline(presentHook, present, &hkPresent);
+			CreateInline(resizeHook, resize, &resize_buffers_callback);
 		}
 	}
 };

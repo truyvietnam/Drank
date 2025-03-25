@@ -2,6 +2,7 @@
 #include "../Module.hpp"
 #include "../../Offsets.h"
 #include "../../../Math.hpp"
+#include <xmmintrin.h>
 #include <string>
 #include <iostream>
 
@@ -86,8 +87,11 @@ public:
 													dist = dist;
 													targeting = true;
 
-													auto abc = Math::CalcAngle(*playerPos, (*entityPos + temp));
-													storedForward = Math::GetForwardVector(abc);
+													auto camera2 = Utils::FindMultiLevelPtr((std::byte*)localPlayerPtr, { 0x10, 0x120 });
+
+													vec3* cameraPos = (vec3*)(camera2 + 0x70);
+
+													storedForward = Math::GetForwardVector(*entityPos, *cameraPos);
 												}
 											}
 										}

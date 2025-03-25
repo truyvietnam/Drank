@@ -21,12 +21,14 @@ public:
 		memset(dst, 0x90, size);
 		VirtualProtect(dst, size, oldprotect, &oldprotect);
 	};
+
 	static inline void copyBytes(void* src, void* dst, unsigned int size) {
 		DWORD oldprotect;
 		VirtualProtect(src, size, PAGE_EXECUTE_READWRITE, &oldprotect);
 		memcpy(dst, src, size);
 		VirtualProtect(src, size, oldprotect, &oldprotect);
 	};
+
 	static inline void patchBytes(void* dst, void* src, unsigned int size) {
 		DWORD oldprotect;
 		VirtualProtect(dst, size, PAGE_EXECUTE_READWRITE, &oldprotect);

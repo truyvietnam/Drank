@@ -1,9 +1,7 @@
-#include <iostream>
-#include <Windows.h>
-#include <Psapi.h>
-
-#include <cstdint>
 #include "Utils.hpp"
+
+#include <iostream>
+#include <cstdint>
 #include <vector>
 #include <algorithm>
 #include <optional>
